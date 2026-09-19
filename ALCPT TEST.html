@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Placement Exam — Simulated Test (Set 1)</title>
+<style>
+  :root{
+    --paper:#F1F3F2;
+    --panel:#FFFFFF;
+    --ink:#16202A;
+    --ink-soft:#5B6B75;
+    --line:#D7DCDB;
+    --stamp:#B23A2E;
+    --stamp-soft:#FBE7E4;
+    --ok:#227A5B;
+    --ok-soft:#DFF3E8;
+    --accent:#1F6F6B;
+    --accent-soft:#DCEEEB;
+    --chip:#EDEFEE;
+  }
+  html.dark{
+    --paper:#11161B;
+    --panel:#171F26;
+    --ink:#E9EEF0;
+    --ink-soft:#8FA0AA;
+    --line:#2A353E;
+    --stamp:#E2685C;
+    --stamp-soft:#3A2320;
+    --ok:#4FCB9A;
+    --ok-soft:#193A2E;
+    --accent:#4FD1C1;
+    --accent-soft:#173634;
+    --chip:#1F2932;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Georgia','Times New Roman',serif;background:var(--paper);color:var(--ink);
+    transition:background .2s,color .2s;}
+  .app{max-width:640px;margin:0 auto;min-height:100vh;background:var(--panel);
+    box-shadow:0 0 0 1px var(--line);display:flex;flex-direction:column;}
+
+  header.bar{padding:12px 14px;border-bottom:2px solid var(--ink);
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'Helvetica Neue',Arial,sans-serif;gap:8px;}
+  header.bar .title{font-family:Georgia,serif;font-weight:700;font-size:15px;flex:1;min-width:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .voice-select-header{max-width:118px;font-size:11.5px;padding:6px 6px;border-radius:20px;
+    border:1.3px solid var(--line);background:var(--chip);color:var(--ink);flex-shrink:0;}
+  .theme-toggle{border:1.3px solid var(--line);background:var(--chip);color:var(--ink);
+    padding:6px 10px;border-radius:20px;font-size:13px;font-family:'Helvetica Neue',Arial,sans-serif;
+    display:flex;align-items:center;gap:5px;flex-shrink:0;}
+
+  .stats-strip{display:flex;gap:0;font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;
+    border-bottom:1px solid var(--line);}
+  .stats-strip .stat{flex:1;text-align:center;padding:9px 4px;border-right:1px solid var(--line);}
+  .stats-strip .stat:last-child{border-right:none;}
+  .stats-strip .stat b{display:block;font-size:15px;font-family:Georgia,serif;margin-bottom:1px;}
+  .stats-strip .stat.correct b{color:var(--ok);}
+  .stats-strip .stat.wrong b{color:var(--stamp);}
+
+  main{flex:1;padding:18px 16px 96px;}
+
+  .cover{display:flex;flex-direction:column;gap:16px;padding-top:6px;}
+  .cover h1{font-size:23px;line-height:1.3;margin:0;}
+  .cover p{font-family:'Helvetica Neue',Arial,sans-serif;color:var(--ink-soft);font-size:14.5px;line-height:1.6;margin:0;}
+  .stamp-box{border:1.5px solid var(--accent);color:var(--accent);padding:10px 14px;
+    font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.5;background:var(--accent-soft);}
+  .spec{width:100%;border-collapse:collapse;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;}
+  .spec td{padding:8px 0;border-bottom:1px solid var(--line);}
+  .spec td:first-child{color:var(--ink-soft);width:55%;}
+  .spec td:last-child{text-align:right;font-weight:700;}
+  .voice-row{font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;display:flex;flex-direction:column;gap:6px;}
+  .voice-row select{padding:9px;border-radius:6px;border:1.3px solid var(--line);background:var(--panel);color:var(--ink);font-size:14px;}
+
+  button{font-family:'Helvetica Neue',Arial,sans-serif;cursor:pointer;border:none;}
+  .btn-primary{background:var(--ink);color:var(--paper);padding:14px 22px;font-size:15px;font-weight:700;
+    letter-spacing:.2px;width:100%;border-radius:8px;}
+  html.dark .btn-primary{background:var(--accent);color:#0B1210;}
+  .btn-secondary{background:none;border:1.5px solid var(--ink);color:var(--ink);padding:11px 16px;
+    font-size:14px;font-weight:600;border-radius:8px;}
+
+  .section-label{font-family:'Helvetica Neue',Arial,sans-serif;font-size:11.5px;font-weight:700;
+    letter-spacing:.5px;color:var(--accent);border-bottom:2px solid var(--accent);
+    display:inline-block;padding-bottom:3px;margin-bottom:12px;}
+  .progress-track{height:4px;background:var(--line);width:100%;margin-bottom:16px;border-radius:2px;overflow:hidden;}
+  .progress-fill{height:4px;background:var(--accent);transition:width .25s;}
+
+  .qnum{font-family:'Helvetica Neue',Arial,sans-serif;color:var(--ink-soft);font-size:13px;margin-bottom:6px;}
+  .prompt{font-size:19px;line-height:1.55;margin:0 0 16px;white-space:pre-line;}
+
+  .play-row{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+  .play-btn{width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+  html.dark .play-btn{color:#0B1210;}
+  .play-btn.playing{background:var(--stamp);color:#fff;}
+  .play-hint{font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:var(--ink-soft);}
+  .reveal-btn{background:none;border:1.3px dashed var(--line);color:var(--ink-soft);padding:9px 12px;
+    border-radius:8px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;margin-bottom:16px;}
+  .reveal-btn.on{border-style:solid;border-color:var(--accent);color:var(--accent);}
+
+  .choices{display:flex;flex-direction:column;gap:9px;}
+  .choice{display:flex;align-items:flex-start;gap:12px;border:1.5px solid var(--line);padding:13px 14px;
+    font-family:'Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.4;background:var(--panel);
+    color:var(--ink);text-align:left;width:100%;border-radius:8px;}
+  .choice .letter{font-family:Georgia,serif;font-weight:700;color:var(--ink-soft);flex-shrink:0;width:18px;}
+  .choice .mark{margin-left:auto;font-weight:700;flex-shrink:0;padding-left:8px;}
+  .choice.selected{border-color:var(--ink);}
+  .choice.correct{border-color:var(--ok);background:var(--ok-soft);}
+  .choice.correct .letter,.choice.correct .mark{color:var(--ok);}
+  .choice.wrong{border-color:var(--stamp);background:var(--stamp-soft);}
+  .choice.wrong .letter,.choice.wrong .mark{color:var(--stamp);}
+
+  .feedback{font-family:'Helvetica Neue',Arial,sans-serif;font-size:13.5px;font-weight:700;
+    margin-top:14px;padding:10px 12px;border-radius:8px;}
+  .feedback.right{background:var(--ok-soft);color:var(--ok);}
+  .feedback.wrong{background:var(--stamp-soft);color:var(--stamp);}
+
+  footer.nav{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1.5px solid var(--ink);
+    padding:10px 16px;max-width:640px;margin:0 auto;display:flex;gap:8px;align-items:center;}
+  footer.nav button{border-radius:8px;}
+  footer.nav .navbtn{padding:12px 16px;font-size:14px;font-weight:700;background:var(--chip);color:var(--ink);flex:1;}
+  footer.nav .navbtn:disabled{opacity:.35;}
+  footer.nav .navbtn.primary{background:var(--ink);color:var(--paper);}
+  html.dark footer.nav .navbtn.primary{background:var(--accent);color:#0B1210;}
+  .jump-btn{background:none;border:1.3px solid var(--line);color:var(--ink-soft);padding:12px;border-radius:8px;font-size:16px;}
+
+  .grid-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;z-index:20;}
+  .grid-sheet{background:var(--panel);width:100%;max-width:640px;margin:0 auto;border-radius:16px 16px 0 0;
+    padding:18px 16px 26px;max-height:75vh;overflow:auto;}
+  .grid-sheet h3{margin:0 0 12px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;color:var(--ink-soft);}
+  .grid-nav{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;}
+  .grid-nav button{aspect-ratio:1;border:1.3px solid var(--line);background:var(--panel);
+    font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:600;color:var(--ink-soft);border-radius:6px;}
+  .grid-nav button.answered{background:var(--chip);color:var(--ink);}
+  .grid-nav button.correct{background:var(--ok-soft);color:var(--ok);border-color:var(--ok);}
+  .grid-nav button.wrong{background:var(--stamp-soft);color:var(--stamp);border-color:var(--stamp);}
+  .grid-nav button.current{outline:2px solid var(--accent);outline-offset:2px;}
+  .close-sheet{width:100%;margin-top:14px;}
+
+  .score-hero{text-align:center;padding:24px 0 8px;}
+  .score-hero .big{font-size:50px;font-weight:700;line-height:1;}
+  .score-hero .lbl{font-family:'Helvetica Neue',Arial,sans-serif;color:var(--ink-soft);font-size:13px;letter-spacing:.4px;margin-top:6px;}
+  .score-rows{font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;margin:20px 0;}
+  .score-rows .row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);}
+  .score-rows .row span:last-child{font-weight:700;}
+
+  .review-item{border-bottom:1px solid var(--line);padding:14px 0;}
+  .review-item .qtxt{font-size:15px;margin-bottom:8px;white-space:pre-line;}
+  .review-item .ans{font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:1.6;}
+  .review-item .ans .you{color:var(--stamp);}
+  .review-item .ans .right{color:var(--ok);}
+  .review-item .flag{display:inline-block;margin-top:6px;font-family:'Helvetica Neue',Arial,sans-serif;
+    font-size:11px;background:#FFF3D6;color:#8A6300;padding:2px 8px;border:1px solid #E0C069;border-radius:4px;}
+
+  .hidden{display:none !important;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="bar">
+    <div class="title" id="headerTitle">English Placement Exam</div>
+    <select id="voiceSelect" class="voice-select-header"></select>
+    <button class="theme-toggle" onclick="toggleTheme()"><span id="themeIcon">🌙</span><span id="themeLabel">Dark</span></button>
+  </header>
+
+  <div class="stats-strip hidden" id="statsStrip">
+    <div class="stat"><b id="statAnswered">0</b>Answered</div>
+    <div class="stat"><b id="statRemaining">100</b>Remaining</div>
+    <div class="stat correct"><b id="statCorrect">0</b>Correct</div>
+    <div class="stat wrong"><b id="statWrong">0</b>Incorrect</div>
+  </div>
+
+  <main>
+
+    <section id="screen-cover" class="cover">
+      <h1>English Placement Exam<br>Simulated Test — Set 1</h1>
+      <p>This mock exam mirrors the real test structure: a Listening section first, followed by a Structure &amp; Written Expression section.</p>
+      <table class="spec">
+        <tr><td>Part 1 — Listening</td><td>66 questions</td></tr>
+        <tr><td>Part 2 — Structure &amp; Writing</td><td>34 questions</td></tr>
+        <tr><td>Total</td><td>100 questions</td></tr>
+      </table>
+      <div class="stamp-box">You'll see whether each answer is right or wrong the moment you pick it. Move freely with Back / Next, or jump to any question from the grid. You can pick the listening voice anytime from the top bar.</div>
+      <button class="btn-primary" onclick="startExam()">Begin Exam</button>
+    </section>
+
+    <section id="screen-quiz" class="hidden">
+      <div class="section-label" id="sectionLabel">PART 1 · LISTENING</div>
+      <div class="progress-track"><div class="progress-fill" id="qProgress"></div></div>
+      <div class="qnum" id="qNum">Question 1 of 100</div>
+      <div class="prompt" id="qPrompt"></div>
+      <div class="play-row hidden" id="playRow">
+        <button class="play-btn" id="playBtn" onclick="playCurrent()">▶</button>
+        <div class="play-hint" id="playHint">Tap to hear the statement</div>
+      </div>
+      <button class="reveal-btn hidden" id="revealBtn" onclick="toggleQuestionText()">👁 Show question text</button>
+      <div class="choices" id="qChoices"></div>
+      <div class="feedback hidden" id="feedback"></div>
+    </section>
+
+    <section id="screen-results" class="hidden">
+      <div class="score-hero">
+        <div class="big" id="scoreBig">0%</div>
+        <div class="lbl">OVERALL SCORE</div>
+      </div>
+      <div class="score-rows">
+        <div class="row"><span>Listening (Part 1)</span><span id="scoreListen">0 / 66</span></div>
+        <div class="row"><span>Structure &amp; Writing (Part 2)</span><span id="scoreStruct">0 / 34</span></div>
+        <div class="row"><span>Total time used</span><span id="scoreTime">—</span></div>
+      </div>
+      <button class="btn-secondary" onclick="showReview()">Review answers</button>
+    </section>
+
+    <section id="screen-review" class="hidden">
+      <div class="section-label">ANSWER REVIEW</div>
+      <div id="reviewList"></div>
+    </section>
+
+  </main>
+
+  <footer class="nav hidden" id="navBar">
+    <button class="navbtn" id="btnBack" onclick="goBack()">← Back</button>
+    <button class="jump-btn" onclick="openGrid()">⋮⋮⋮</button>
+    <button class="navbtn primary" id="btnNext" onclick="goNext()">Next →</button>
+  </footer>
+
+  <div class="grid-overlay hidden" id="gridOverlay" onclick="closeGridBg(event)">
+    <div class="grid-sheet">
+      <h3>Jump to a question</h3>
+      <div class="grid-nav" id="gridNav"></div>
+      <button class="btn-secondary close-sheet" onclick="closeGrid()">Close</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const listening = [
+["Many students like to read in their spare time.",["They read while they are working","They read during their free time","They read when they are sleeping","They read only during class"],1],
+["The room was dark.",["It was filled with people","The room was very large","The windows were open","There was no light in it"],3],
+["What's your favourite kind of candy?",["I prefer salty crackers","I enjoy eating fresh vegetables","I don't like sweets at all","I like anything with chocolate in it"],3],
+["Mary looked sick.",["She was ill","She was busy","She was tired","She was happy"],0],
+["Al just got a new telescope.",["He uses it to look at the stars","He uses it to wash his car","He uses it to listen to music","He uses it to cook his dinner"],0],
+["The questions are hard to answer.",["They are very easy","They are very short","They are interesting","They are difficult"],3],
+["How much does this shirt cost?",["It is blue color","It is size medium","$25 dollars","It is made of cotton"],2],
+["Cars can travel in both directions on this street.",["No entry allowed","One way only","Parking only","Two ways"],3],
+["Did you know Martin plays a musical instrument?",["Yes he plays video games","Yes he plays at the park","Yes he plays soccer","Yes he plays guitar"],3],
+["Rand bought himself a new bed.",["He will drive it","He will sleep on it","He will cook on it","He will wear it"],1],
+["What rank is Dave?",["He's very tall","He's a doctor","He's a sergeant","He's from Texas"],2],
+["This is my dressing room. And that one is yours.",["We share the same room","There are no rooms","I have two rooms","We have separate rooms for dressing"],3],
+["Mrs. Grady asked Pat for a loan of $100.",["Give","Spend","Borrow","Steal"],2],
+["The examination was over in one hour.",["The examination started in an hour","The class failed the examination","The examination took two hours","The class finished the examination in an hour"],3],
+["Bill wanted to preserve the papers.",["He wanted to save the papers.","He wanted to throw the papers away.","He wanted to read the papers.","He wanted to burn the papers."],0],
+["Most tests have time limitations. What do they have?",["They have extra time.","They have restrictions.","They have many answers.","They have no rules."],1],
+["Where would you find sand?",["on the moon","on a beach","in the clouds","inside a book"],1],
+["Mary focused her attention on the speaker.",["She concentrated on the speaker.","She laughed at the speaker.","She slept during the speech.","She ignored the speaker."],0],
+["What kind of metal is that?",["gold","water","wood","plastic"],0],
+["Mark pays rent every month.",["on a bicycle","at a restaurant","in a grocery store","in an apartment"],3],
+["It was difficult to locate the city on the map.",["The city was very small.","The map was very colorful.","The map was missing.","The name was hard to find."],3],
+["She broke her nail.",["finger","shoulder","elbow","knee"],0],
+["Eleanor is boiling water for tea.",["heating","freezing","throwing","drinking"],0],
+["Major Harris appreciated his wife's gift.",["He disliked the gift.","He sold the gift.","He was thankful for it.","He lost the gift."],2],
+["Hurry up. You barely have time to eat.",["You have an hour.","You have plenty of time.","You don't have much time to eat.","You already ate."],2],
+["Do you want butter on your bread?",["No, I am wearing shoes.","No, it's too expensive.","Yes, I like the rain.","Yes, that will be good."],3],
+["There's an obstruction in the right lane.",["smooth","clear","blocked","open"],2],
+["Paula had a direct flight to Frankfurt.",["was cancelled","was very late","made many stops","was nonstop"],3],
+["The airplane vanished from sight.",["It disappeared.","It returned.","It exploded.","It landed safely."],0],
+["What did you buy besides eggs?",["Eggs are expensive.","We also got some milk and bread.","We don't like eggs.","We only bought eggs."],1],
+["Hector objected to his son's decision to go to a military high school.",["disapproved of","ignored","agreed with","supported"],0],
+["Mrs. Jones has a valuable table.",["broken","expensive","wooden","cheap"],1],
+["How do these projects relate to each other?",["separated","finished","different","connected"],3],
+["Are you anxious about your interview?",["Yes I'm a little worried","No I'm sleeping","Yes I'm very happy","No I'm very angry"],0],
+["Mr. Smith said they have classes all year round.",["There are no classes.","Classes are held throughout the year.","Classes happen on weekends.","Classes are only in summer."],1],
+["The soldier guarded the three prisoners.",["He was eating with them.","He let them go home.","He did not want them to get away.","He was sleeping."],2],
+["The young man snatched Judy's purse.",["dropped","bought","grabbed","returned"],2],
+["Make sure you don't overheat the engine.",["Add more fuel","Keep it very cold","Don't let it get too hot","Don't let it stop"],2],
+["The class will visit a ranch today. Who will they see?",["A sailor.","An astronaut.","A pilot.","A cowboy."],3],
+["I had some correspondence from my father last week.",["I got some food.","I got some money.","I got a new car.","I got some letters."],3],
+["We blended different kinds of coffee beans.",["Burned","Separated","Mixed","Sold"],2],
+["Bill got off the bus at 18th Street.",["He left the bus.","He drove the bus.","He missed the bus.","He entered the bus."],0],
+["General Baker is a very cautious officer.",["He is very angry.","He is very careful.","He is very brave.","He is very old."],1],
+["I think I'll get an enlargement of this picture.",["A digital copy.","A smaller copy.","A black and white copy.","A bigger copy."],3],
+["Frank was a very conscientious worker.",["did not like his job","worked only for money","tried hard to do good work","was always late to work"],2],
+["Moments after the hunter pulled the trigger,",["an echo","a rainbow","a nice smell","a silent forest"],0],
+["The children taunted Mark.",["Shared.","Followed.","Ridiculed.","Helped."],2],
+["Mark paid a fraction of the regular price for his car.",["double the price","no money at all","the full price","a reduced price"],3],
+["What's the admission price?",["to buy a gift","to get in","to leave the building","to park the car"],1],
+["The company's decreased advertising didn't make any difference.",["beneficial.","inconsequential.","very expensive.","important."],1],
+["Billy needs to wash his hands.",["cold","large","grimy","clean"],2],
+["Helen Jordan is an asset to the organization.",["she is new","she is useful","she is the boss","she is a problem"],1],
+["Wire bends easily.",["heavy","shiny","pliable","rigid"],2],
+["Charles got put down by his boss.",["He was promoted.","He was criticized.","He was given a raise.","He was fired."],1],
+["Jethro was unconscious for several minutes after being hit by the ball.",["He was very angry.","He was laughing.","He was running fast.","He was knocked out."],3],
+["The climate here is arid.",["The weather is cloudy","The weather is very cold","The weather is humid","The weather is dry"],3],
+["Speaker 1: I need to send this package home.\nSpeaker 2: Let's go to the post office.",["She is going to mail a package","She is going to buy food","She is going to work","She is going to sleep"],0],
+["Speaker 1: What does your wife do?\nSpeaker 2: She's a librarian.",["sells cars","teaches swimming","flies planes","orders books"],3],
+["Speaker 1: How's your business doing?\nSpeaker 2: It's expanding.",["his business is very quiet.","his business is closing.","his business is failing.","his business is getting larger."],3],
+["Speaker 2: I'm going now. See you later.\nSpeaker 1: Okay, but you better take your raincoat.",["sunny.","hot.","dusty.","wet."],3],
+["Speaker 2: Did you get anything for your birthday?\nSpeaker 1: Yeah, I got this necklace.",["furniture","clothing","food","jewellery"],3],
+["Speaker 2: I can't smell the flowers.\nSpeaker 1: That's because they're odourless.",["thorns","color","scent","water"],2],
+["Speaker 2: How are you going to travel to Canada?\nSpeaker 1: By jet.",["I'm going by plane.","I'm going by train.","I'm going by car.","I'm going by boat."],0],
+["Speaker 1: Hi, Todd. What are you doing here? I thought you were going to leave.\nSpeaker 2: Yeah, I was, but I decided to stick around for another semester.",["police officer","college student","doctor","car mechanic"],1],
+["He's writing a paper on the super collider for his science class.",["playing sports","eating lunch","doing research","buying clothes"],2],
+["Speaker 1: Where's Paula?\nSpeaker 2: She started kindergarten today.",["is at work","is sleeping","is on vacation","is in school"],3],
+];
+
+const structure = [
+["Select the correct sentence.",["The race won who?","Won who the race?","Who won the race?","The race who won?"],2],
+["Most children in the United States start kindergarten when ____ are five years old.",["our","they","we","them"],1],
+["I don't want that one. I want the ____.",["other","any","some","both"],0],
+["There is very little ____ to drink.",["meat","corn","water","bread"],2],
+["A lubrication system is an essential part of most machines. The part is ____.",["necessary","complex","removed","extra"],0],
+["Summer, fall, winter, and spring are known as ____.",["temperatures","changes","seasons","times"],2],
+["I asked my mom to pick up some things for me... she had forgotten, and that she couldn't get any. The word 'any' refers to the ____.",["the town","stamps","groceries","my mom"],2],
+["Mr. Lawrence has always hated ____.",["has camped","camping","camped","was camping"],1],
+["We were invited ____ with them to the park.",["going","have gone","will be going","to go"],3],
+["Jack asked Martha to hold on. What did he ask her to do?",["to use the phone","to get off the phone","to wait at the phone","to answer the phone"],2],
+["The officer gave a brief talk.",["illustrated","detailed","short","long"],2],
+["The ____ is used to guide the car.",["carburetor","transmission","steering wheel","brake drum"],2],
+["You ____ John's feelings when you didn't send him an invitation to your wedding.",["divided","hurt","stripped","bent"],1],
+["According to the paragraph, the Shaker lifestyle was ____.",["the Shaker sect originated in Europe","different from that of mainstream America","Shaker furniture has become very popular","Shakers didn't believe in war"],1],
+["Mr. Smith is a brave person. He faces danger without ____.",["money","sleep","food","fear"],3],
+["Ed ____ like to travel around the world.",["would","ought","could","can"],0],
+["The couple became engaged ____ they graduated from college.",["as soon as","as far as","even if","even though"],0],
+["By the time he graduated last year, Sam ____ for ten years.",["will study","had studied","has been studying","will have been studying"],1],
+["It is dangerous to follow another car too closely because you may ____.",["be able to not stop","be not able to stop","not be able to stop","stop not be able to"],2],
+["Melissa always wears very ____ dresses.",["most stylishly","more stylish","stylish","stylishly"],2],
+["Tools should ____ against rust.",["been protected","protect","have protected","be protected"],3],
+["All the students left, but John was told to sit tight.",["straighten up","remain","leave","tighten his belt"],1],
+["Detach the coupon and mail it in.",["Read","Fold","Sign","Remove"],3],
+["He dropped the ax on his foot and broke his ____.",["finger","wrist","leg","toe"],3],
+["____ the lightning, the baseball game had to be canceled.",["As ever","Since","Whereas","Due to"],3],
+["The senators decided to amend the laws.",["ignore","reject","approve","change"],3],
+["He had to see the dentist on account of a toothache.",["because of","in case of","in accordance with","in spite of"],0],
+["We plan to finish this project ____ the first of the year.",["until","since","from","around"],3],
+["A strong wind ____ across the desert created a sandstorm.",["blowing","was blowing","blew","who blew"],0],
+["When the bookcase fell, it ____ a hole in the wall.",["fluffed","mocked","gouged","hauled"],2],
+["Tony's face looked flushed.",["red","white","wrinkled","thin"],0],
+["Didn't you think that the captain displayed a lot of tact during the meeting?",["ignorance","nervousness","expertise","diplomacy"],3],
+["According to the paragraph about Sam the dog, ____.",["Sam was a smuggler who got caught","Sam spent 10 years helping the USDA prevent the spread of disease","Kevin and Sam are dogs who helped the government","Kevin and Sam are partners who are retiring after 30 years"],3],
+["Etta, along with Margie, ____ being honored for her achievement in academics.",["was","are","were","be"],0],
+];
+
+const uncertainStruct = [13,32];
+const LETTERS = ["أ","ب","ج","د"];
+
+const all = listening.map(q=>({q, sec:"listen"})).concat(structure.map(q=>({q, sec:"struct"})));
+let answers = new Array(all.length).fill(null);
+let cur = 0;
+let startedAt=null, finishedAt=null;
+let chosenVoice = null;
+
+function $(id){return document.getElementById(id);}
+function show(id){["screen-cover","screen-quiz","screen-results","screen-review"].forEach(s=>$(s).classList.add("hidden"));$(id).classList.remove("hidden");}
+
+/* ---------- theme ---------- */
+function toggleTheme(){
+  document.documentElement.classList.toggle("dark");
+  const dark = document.documentElement.classList.contains("dark");
+  $("themeIcon").textContent = dark ? "☀️" : "🌙";
+  $("themeLabel").textContent = dark ? "Light" : "Dark";
+}
+if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){ toggleTheme(); }
+
+/* ---------- voices ---------- */
+const PREFERRED = ["Google US English","Microsoft Aria Online","Microsoft Jenny Online","Samantha","Ava","Serena","Natural","Google UK English Female"];
+function populateVoices(){
+  const voices = speechSynthesis.getVoices().filter(v=>v.lang.startsWith("en"));
+  const sel = $("voiceSelect");
+  if(!voices.length) return;
+  sel.innerHTML="";
+  voices.forEach(v=>{
+    const o=document.createElement("option");
+    o.value=v.name; o.textContent=`${v.name} (${v.lang})`;
+    sel.appendChild(o);
+  });
+  let best = voices.find(v=>PREFERRED.some(p=>v.name.includes(p)));
+  if(!best) best = voices.find(v=>v.lang==="en-US") || voices[0];
+  sel.value = best.name;
+  chosenVoice = best;
+  sel.onchange = ()=>{ chosenVoice = voices.find(v=>v.name===sel.value); };
+}
+if('speechSynthesis' in window){
+  populateVoices();
+  speechSynthesis.onvoiceschanged = populateVoices;
+}
+
+/* ---------- start ---------- */
+function startExam(){
+  startedAt = Date.now();
+  cur = 0;
+  $("statsStrip").classList.remove("hidden");
+  $("navBar").classList.remove("hidden");
+  show("screen-quiz");
+  render();
+  maybeAutoplay();
+}
+
+function render(){
+  const item = all[cur];
+  const [prompt, choices, correct] = item.q;
+  const isListen = item.sec==="listen";
+  const secNum = isListen ? cur+1 : cur-listening.length+1;
+  const secTotal = isListen ? listening.length : structure.length;
+
+  $("headerTitle").textContent = isListen ? "Part 1 · Listening" : "Part 2 · Structure";
+  $("sectionLabel").textContent = isListen ? "PART 1 · LISTENING" : "PART 2 · STRUCTURE & WRITING";
+  $("qNum").textContent = `Question ${secNum} of ${secTotal}  ·  (${cur+1}/${all.length} overall)`;
+  $("qProgress").style.width = ((cur)/(all.length-1)*100)+"%";
+
+  $("playRow").classList.toggle("hidden", !isListen);
+  $("playBtn").classList.remove("playing");
+  $("playBtn").textContent="▶";
+  $("playHint").textContent="Tap to hear the statement";
+
+  const already = answers[cur];
+  textShown = !isListen || revealed[cur];
+  $("revealBtn").classList.toggle("hidden", !isListen);
+  updatePromptVisibility();
+
+  const box = $("qChoices"); box.innerHTML="";
+  choices.forEach((c,idx)=>{
+    const b=document.createElement("button");
+    b.className="choice";
+    b.innerHTML=`<span class="letter">${LETTERS[idx]}</span><span>${c}</span><span class="mark"></span>`;
+    b.onclick=()=>selectAnswer(idx);
+    box.appendChild(b);
+  });
+
+  $("feedback").classList.add("hidden");
+  if(already!==null){
+    applyFeedback(already, correct);
+  }
+
+  $("btnBack").disabled = cur===0;
+  $("btnNext").textContent = cur===all.length-1 ? "Finish →" : "Next →";
+  updateStats();
+  buildGrid();
+}
+
+function selectAnswer(idx){
+  if(answers[cur]!==null) return;
+  answers[cur]=idx;
+  const [,,correct] = all[cur].q;
+  applyFeedback(idx, correct);
+  updateStats();
+}
+
+function applyFeedback(chosen, correct){
+  document.querySelectorAll("#qChoices .choice").forEach((b,i)=>{
+    b.querySelector(".mark").textContent="";
+    b.classList.remove("selected","correct","wrong");
+    if(i===correct){ b.classList.add("correct"); b.querySelector(".mark").textContent="✓"; }
+    if(i===chosen && chosen!==correct){ b.classList.add("wrong"); b.querySelector(".mark").textContent="✗"; }
+    if(i===chosen) b.classList.add("selected");
+  });
+  const fb = $("feedback");
+  fb.classList.remove("hidden");
+  if(chosen===correct){
+    fb.className="feedback right"; fb.textContent="✓ Correct!";
+  } else {
+    fb.className="feedback wrong";
+    fb.textContent=`✗ Incorrect — the correct answer is ${LETTERS[correct]}. ${all[cur].q[1][correct]}`;
+  }
+}
+
+let textShown = false;
+let revealed = new Array(all.length).fill(false);
+function updatePromptVisibility(){
+  const [prompt] = all[cur].q;
+  const isListen = all[cur].sec==="listen";
+  if(textShown){
+    $("qPrompt").textContent = prompt;
+    if(isListen) $("revealBtn").classList.add("hidden");
+  } else {
+    $("qPrompt").textContent = "🔒  Question text hidden — listen to the audio, or tap \"Show question text\" below.";
+    $("revealBtn").classList.remove("hidden");
+    $("revealBtn").classList.remove("on");
+  }
+}
+function toggleQuestionText(){
+  revealed[cur] = true;
+  textShown = true;
+  updatePromptVisibility();
+}
+
+/* ---------- audio ---------- */
+function playCurrent(){
+  const text = all[cur].q[0].replace(/Speaker 1:|Speaker 2:/g,"");
+  $("playBtn").classList.add("playing");
+  $("playBtn").textContent="●";
+  $("playHint").textContent="Playing…";
+  try{
+    speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 0.96; utter.pitch = 1.02; utter.lang="en-US";
+    if(chosenVoice) utter.voice = chosenVoice;
+    utter.onend = ()=>{ $("playBtn").classList.remove("playing"); $("playBtn").textContent="▶"; $("playHint").textContent="Tap to hear it again"; };
+    speechSynthesis.speak(utter);
+  }catch(e){
+    $("playBtn").classList.remove("playing"); $("playBtn").textContent="▶";
+  }
+}
+
+/* ---------- nav ---------- */
+function goBack(){ if(cur>0){ speechSynthesis.cancel(); cur--; render(); } }
+function goNext(){
+  speechSynthesis.cancel();
+  if(cur<all.length-1){
+    cur++; render();
+    maybeAutoplay();
+  }
+  else { finishExam(); }
+}
+function maybeAutoplay(){
+  const target = cur;
+  const item = all[cur];
+  if(item.sec==="listen" && answers[cur]===null){
+    setTimeout(()=>{ if(cur===target){ playCurrent(); } }, 1000);
+  }
+}
+
+/* ---------- stats ---------- */
+function updateStats(){
+  let ansCount=0, correctCount=0, wrongCount=0;
+  answers.forEach((a,i)=>{ if(a!==null){ ansCount++; if(a===all[i].q[2]) correctCount++; else wrongCount++; } });
+  $("statAnswered").textContent = ansCount;
+  $("statRemaining").textContent = all.length-ansCount;
+  $("statCorrect").textContent = correctCount;
+  $("statWrong").textContent = wrongCount;
+}
+
+/* ---------- jump grid ---------- */
+function buildGrid(){
+  const g=$("gridNav"); g.innerHTML="";
+  all.forEach((item,i)=>{
+    const b=document.createElement("button");
+    b.textContent=i+1;
+    const a=answers[i];
+    if(a!==null){ b.classList.add(a===item.q[2] ? "correct" : "wrong"); }
+    if(i===cur) b.classList.add("current");
+    b.onclick=()=>{ speechSynthesis.cancel(); cur=i; render(); closeGrid(); };
+    g.appendChild(b);
+  });
+}
+function openGrid(){ $("gridOverlay").classList.remove("hidden"); }
+function closeGrid(){ $("gridOverlay").classList.add("hidden"); }
+function closeGridBg(e){ if(e.target.id==="gridOverlay") closeGrid(); }
+
+/* ---------- results ---------- */
+function finishExam(){
+  finishedAt = Date.now();
+  speechSynthesis.cancel();
+  $("navBar").classList.add("hidden");
+  $("statsStrip").classList.add("hidden");
+  $("headerTitle").textContent="Results";
+  let ls=0; listening.forEach((q,i)=>{ if(answers[i]===q[2]) ls++; });
+  let ss=0; structure.forEach((q,i)=>{ if(answers[listening.length+i]===q[2]) ss++; });
+  const total = ls+ss, max = listening.length+structure.length;
+  $("scoreBig").textContent = Math.round(total/max*100)+"%";
+  $("scoreListen").textContent = `${ls} / ${listening.length}`;
+  $("scoreStruct").textContent = `${ss} / ${structure.length}`;
+  const mins = Math.round((finishedAt-startedAt)/60000);
+  $("scoreTime").textContent = `${mins} min`;
+  show("screen-results");
+}
+
+function showReview(){
+  const list = $("reviewList"); list.innerHTML="";
+  function block(title, arr, offset, uncertainIdx){
+    const h=document.createElement("div");
+    h.className="section-label"; h.style.marginTop="18px"; h.textContent=title;
+    list.appendChild(h);
+    arr.forEach((q,i)=>{
+      const yours = answers[offset+i];
+      const correct = q[2];
+      const div=document.createElement("div"); div.className="review-item";
+      const yoursTxt = yours===null ? "no answer" : `${LETTERS[yours]}. ${q[1][yours]}`;
+      const rightTxt = `${LETTERS[correct]}. ${q[1][correct]}`;
+      div.innerHTML = `
+        <div class="qtxt">${i+1}. ${q[0]}</div>
+        <div class="ans">
+          Your answer: <span class="${yours===correct?'right':'you'}">${yoursTxt}</span><br>
+          Correct answer: <span class="right">${rightTxt}</span>
+        </div>
+        ${uncertainIdx && uncertainIdx.includes(i) ? '<div class="flag">Source passage not provided — verify this one</div>' : ''}
+      `;
+      list.appendChild(div);
+    });
+  }
+  block("PART 1 — LISTENING", listening, 0, null);
+  block("PART 2 — STRUCTURE & WRITING", structure, listening.length, uncertainStruct);
+  show("screen-review");
+}
+</script>
+</body>
+</html>
